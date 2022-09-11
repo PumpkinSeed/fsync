@@ -1,5 +1,6 @@
-# dfs-server
-Dot file syncer
+# fsync
+
+File sync - Sync the files between multiple computers (like dotfiles, IDE files, etc.)
 
 ### Concept
 
