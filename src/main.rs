@@ -7,7 +7,7 @@ fn main() {
     match matches.subcommand() {
         Some((cli::INIT_COMMAND, _args)) => {
             println!("Init");
-            file::init()
+            file::init();
         }
         Some((cli::COMMIT_COMMAND, _args)) => {
             println!("Commit");
@@ -17,6 +17,7 @@ fn main() {
         }
         Some((cli::REMOVE_COMMAND, _args)) => {
             println!("Remove");
+            file::remove();
         }
         _ => {
             println!("Invalid sub command");
