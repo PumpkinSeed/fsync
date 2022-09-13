@@ -2,6 +2,7 @@ extern crate xxhash_rust;
 
 mod cli;
 mod file;
+mod commit;
 
 fn main() {
     let matches = cli::init().get_matches();
