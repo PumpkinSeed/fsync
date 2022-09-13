@@ -1,10 +1,11 @@
-use std::path::Path;
+use std::env;
 use git2::build::RepoBuilder;
+use std::path::Path;
 
-fn clone() {
+fn clone(url: &str) {
     let mut cb = git2::RemoteCallbacks::new();
-    cb.credentials(|url, username, allowed| {
-        let ret = get_credentials(url, username, allowed);
+    cb.credentials(|_url, username, allowed| {
+        let ret = get_credentials(username, allowed);
 
         if let Err(ref error) = ret {
             println!("error: {}", error)
@@ -17,15 +18,17 @@ fn clone() {
 
     RepoBuilder::new()
         .fetch_options(opts)
-        .clone("git@github.com:PumpkinSeed/fsync-test.git", Path::new("/tmp/test")).expect("clone failed");
+        .clone(
+            url,
+            Path::new(format!("{}/test",  env::temp_dir().to_str().expect("")).as_str()),
+        )
+        .expect("clone failed");
 }
 
-fn get_credentials(url: &str, username: Option<&str>, allowed: git2::CredentialType) -> Result<git2::Cred, git2::Error> {
-   // let cfg = try!(self.config());
-
-    // let mut cred_helper = git2::CredentialHelper::new(url);
-    // cred_helper.config(&cfg);
-
+fn get_credentials(
+    username: Option<&str>,
+    allowed: git2::CredentialType,
+) -> Result<git2::Cred, git2::Error> {
     if allowed.contains(git2::CredentialType::USERNAME) {
         return git2::Cred::username(username.unwrap_or("git"));
     }
@@ -35,16 +38,17 @@ fn get_credentials(url: &str, username: Option<&str>, allowed: git2::CredentialT
     }
 
     if allowed.contains(git2::CredentialType::SSH_KEY) {
-        let name = username.map(|s| s.to_string())
-            //.or_else(|| cred_helper.username.clone())
+        let name = username
+            .map(|s| s.to_string())
             .or_else(|| std::env::var("USER").ok())
             .or_else(|| std::env::var("USERNAME").ok())
-            .or_else(|| Some("git".to_string())).unwrap();
+            .or_else(|| Some("git".to_string()))
+            .unwrap();
 
         let result = git2::Cred::ssh_key_from_agent(&name);
 
         if result.is_ok() {
-            return result
+            return result;
         }
     }
 
@@ -52,9 +56,6 @@ fn get_credentials(url: &str, username: Option<&str>, allowed: git2::CredentialT
         if let Ok(token) = std::env::var("GH_TOKEN") {
             return git2::Cred::userpass_plaintext(&token, "");
         }
-        // else if let Ok(cred_helper) = git2::Cred::credential_helper(&cfg, url, username) {
-        //     return Ok(cred_helper);
-        // }
     }
 
     Err(git2::Error::from_str("no authentication available"))
@@ -66,6 +67,6 @@ mod tests {
 
     #[test]
     fn test_clone() {
-        clone()
+        clone("git@github.com:PumpkinSeed/fsync-test.git")
     }
 }

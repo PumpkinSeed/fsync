@@ -1,8 +1,12 @@
 extern crate xxhash_rust;
 
 mod cli;
-mod file;
 mod commit;
+mod constants;
+mod init;
+mod remove;
+mod utils;
+mod etc;
 
 fn main() {
     let matches = cli::init().get_matches();
@@ -10,7 +14,7 @@ fn main() {
     match matches.subcommand() {
         Some((cli::INIT_COMMAND, _args)) => {
             println!("Init");
-            file::init();
+            init::action();
         }
         Some((cli::COMMIT_COMMAND, _args)) => {
             println!("Commit");
@@ -20,7 +24,7 @@ fn main() {
         }
         Some((cli::REMOVE_COMMAND, _args)) => {
             println!("Remove");
-            file::remove();
+            remove::action()
         }
         _ => {
             println!("Invalid sub command");
