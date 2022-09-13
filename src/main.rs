@@ -1,3 +1,5 @@
+extern crate xxhash_rust;
+
 mod cli;
 mod file;
 

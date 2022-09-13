@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 clap = "3.2.20"
+xxhash-rust = { version = "0.8.5", features = ["xxh3"] }
