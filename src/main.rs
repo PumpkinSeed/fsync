@@ -18,6 +18,8 @@ fn main() {
         }
         Some((cli::COMMIT_COMMAND, _args)) => {
             println!("Commit");
+            let c = etc::get_config();
+            commit::action(c);
         }
         Some((cli::SYNC_COMMAND, _args)) => {
             println!("Sync");

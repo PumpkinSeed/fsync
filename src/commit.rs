@@ -1,8 +1,15 @@
-use std::env;
+use crate::etc;
 use git2::build::RepoBuilder;
+use std::env;
 use std::path::Path;
+use uuid::Uuid;
 
-fn clone(url: &str) {
+pub fn action(c: etc::Config) {
+    let temp_location = get_temp_location();
+    clone(c.repository.as_str(), temp_location)
+}
+
+fn clone(url: &str, location: String) {
     let mut cb = git2::RemoteCallbacks::new();
     cb.credentials(|_url, username, allowed| {
         let ret = get_credentials(username, allowed);
@@ -18,10 +25,7 @@ fn clone(url: &str) {
 
     RepoBuilder::new()
         .fetch_options(opts)
-        .clone(
-            url,
-            Path::new(format!("{}/test",  env::temp_dir().to_str().expect("")).as_str()),
-        )
+        .clone(url, Path::new(location.as_str()))
         .expect("clone failed");
 }
 
@@ -61,9 +65,25 @@ fn get_credentials(
     Err(git2::Error::from_str("no authentication available"))
 }
 
+fn get_temp_location() -> String {
+    format!(
+        "{}/{}",
+        env::temp_dir()
+            .to_str()
+            .expect("error while getting temp dir"),
+        Uuid::new_v4(),
+    )
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::commit::clone;
+    use crate::commit::{clone, get_temp_location};
+
+    #[test]
+    fn test_get_temp_location() {
+        let temp_location = get_temp_location();
+        println!("{}", temp_location);
+    }
 
     #[test]
     fn test_clone() {

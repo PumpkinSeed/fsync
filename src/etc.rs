@@ -4,8 +4,8 @@ use std::fs::File;
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Config {
-    repository: String,
-    files: Vec<String>,
+    pub repository: String,
+    pub files: Vec<String>,
 }
 
 pub fn get_config() -> Config {
