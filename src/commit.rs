@@ -87,6 +87,6 @@ mod tests {
 
     #[test]
     fn test_clone() {
-        clone("git@github.com:PumpkinSeed/fsync-test.git")
+        clone("git@github.com:PumpkinSeed/fsync-test.git", "/tmp/test".to_string())
     }
 }
