@@ -3,10 +3,10 @@ extern crate xxhash_rust;
 mod cli;
 mod commit;
 mod constants;
+mod etc;
 mod init;
 mod remove;
 mod utils;
-mod etc;
 
 /*
     TODO:
